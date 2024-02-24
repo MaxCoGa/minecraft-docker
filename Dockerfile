@@ -2,7 +2,7 @@ FROM ubuntu:24.04
 
 RUN apt update
 RUN apt-get install -y --no-install-recommends wget ca-certificates jq
-RUN apt install wget -y
+RUN apt install wget curl -y
 RUN apt install openjdk-17-jre-headless -y
 RUN apt install tmux -y
 
