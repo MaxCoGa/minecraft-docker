@@ -1,0 +1,23 @@
+## minecraft-server config
+server:
+  memory: 8162M
+
+## tunnel config
+tunnel:
+  serveo: true
+    hostname: serveo.net
+    port: <PORTNUMBER>
+  ngrok: false
+    authtoken: <TOKEN>
+
+## dns config
+dns:
+  dsec: false
+    token:
+
+  dynv6: true
+    token: <TOKEN>
+    zones: <DNSZONENAME>
+      id: <ZONEID>
+    records: 
+      id: <RECORDSID>
