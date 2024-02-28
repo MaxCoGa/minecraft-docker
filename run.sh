@@ -43,18 +43,12 @@ then
 	fi
 fi
 
-# cd ngrok
-# tmux new-session -d -s tunnel  './ngrok tcp 25565'
-# cd ..
-
 echo "Starting server..."
 cd server
 tmux new-session -d -s server "tmux set-option mouse on && java -Xmx${server_memory} -Xms${server_memory} -jar server.jar nogui"
 cd ..
 
 echo "Updating ip in dns..."
-
-#tcpaddress=$(curl --silent --show-error localhost:4040/api/tunnels | sed -nE 's/.*public_url":"tcp:..([^"]*).*/\1/p')
 
 tcpsplit=(${tcpaddress//:/ })
 address=${tcpsplit[0]}"."  
