@@ -20,13 +20,27 @@ function parse_yaml {
 eval $(parse_yaml config.yml)
 
 echo "Starting tunnel..."
-
 if $tunnel_serveo
 then
 	echo "	Using serveo..."
-	tmux new-session -d -s tunnel  'ssh -o ServerAliveInterval=60 -R 18895:localhost:25565 serveo.net'
+	tmux new-session -d -s tunnel  "ssh -o ServerAliveInterval=60 -R ${tunnel_serveo_port}:localhost:25565 serveo.net"
 	tcpaddress=${tunnel_serveo_hostname}:${tunnel_serveo_port}
 	echo "	tcpaddress: ${tcpaddress}"
+fi
+
+if $tunnel_connect
+then
+	echo "	Using connect plugin..."
+	tcpaddress=${tunnel_connect_endpoint}.${tunnel_connect_hostname}:${server_port}
+	echo "	tcpaddress: ${tcpaddress}"
+
+	mkdir -p server/plugins/connect
+	> server/plugins/connect/config.yml cat <<< "endpoint: ${tunnel_connect_endpoint}"
+	if [ "${tunnel_connect_token}" != "<TOKEN>" ]
+	then
+		echo "		Using existing token with endpoint ${tunnel_connect_endpoint}"
+		> server/plugins/connect/token.json cat <<< "{\"token\":\"${tunnel_connect_token}\"}"
+	fi
 fi
 
 # cd ngrok
@@ -35,7 +49,7 @@ fi
 
 echo "Starting server..."
 cd server
-tmux new-session -d -s server "java -Xmx${server_memory} -Xms${server_memory} -jar server.jar nogui"
+tmux new-session -d -s server "tmux set-option mouse on && java -Xmx${server_memory} -Xms${server_memory} -jar server.jar nogui"
 cd ..
 
 echo "Updating ip in dns..."
